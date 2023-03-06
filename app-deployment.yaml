@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chiffragetest-deploytest
+spec:
+  selector:
+    matchLabels:
+      app: chiffragetest
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: chiffragetest
+    spec:
+      containers:
+        - name: chiffragetest
+          image: mahamoudmomo/chiffragetest:aristarc
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8082
+          
+          env:   # Setting Enviornmental Variables
+            - name: DB_HOST   # Setting Database host address from configMap
+              value: mysql
+              
+
+            - name: DB_NAME  # Setting Database name from configMap
+              value: aidechiffrage
+              
+
+            - name: DB_USERNAME  # Setting Database username from Secret
+              value: root
+              
+
+            - name: DB_PASSWORD # Setting Database password from Secret
+              value: root
+              
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          
+              
+
+---
+
+apiVersion: v1 # Kubernetes API version
+kind: Service # Kubernetes resource kind we are creating
+metadata: # Metadata of the resource kind we are creating
+  name: chiffragetest
+spec:
+  selector:
+    app: chiffragetest
+  ports:
+    - protocol: "TCP"
+      port: 8082 # The port that the service is running on in the cluster
+      targetPort: 8082
+  type: LoadBalancer # type of the service.
