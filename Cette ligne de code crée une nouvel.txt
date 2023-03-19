@@ -1,0 +1,7 @@
+Cette ligne de code crée une nouvelle figure et des objets d'axe à l'aide de la fonction subplots() de la bibliothèque matplotlib.pyplot. Le paramètre figsize définit la taille de la figure en pouces.
+
+Ces lignes de code définissent le style et suppriment les épines supérieure et droite du tracé à l'aide des fonctions set_style() et despine() de la bibliothèque seaborn.
+
+Cette ligne de code crée un nuage de points à l'aide de la fonction scatterplot() de la bibliothèque seaborn. Les paramètres x et y définissent les données à tracer sur les axes x et y, respectivement. Le paramètre ax spécifie l'objet axe à utiliser pour le tracé. Le paramètre s définit la taille des marqueurs en points, le paramètre color définit la couleur des marqueurs et le paramètre alpha définit l'opacité des marqueurs.
+
+Globalement, le code crée un nuage de points des principaux composants sur les axes x et y, et ajoute des annotations pour chaque variable indiquant sa position sur le graphique et son nom. Le graphique résultant est appelé un cercle de corrélation, et il montre les corrélations entre les composantes principales et les variables initiales.

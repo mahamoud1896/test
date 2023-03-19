@@ -1,0 +1,82 @@
+
+
+
+# get feature names
+feature_names = df.columns
+
+# create dataframe to store results
+results_df = pd.DataFrame(columns=['Principal Component', 'Feature Name', 'Contribution'])
+
+pca = PCA()
+principalComponents = pca.fit_transform(X)
+
+# iterate over principal components
+for i in range(len(pca.explained_variance_ratio_)):
+    # get loadings and sort by absolute value
+    loadings = pca.components_[i]
+    abs_loadings = np.abs(loadings)
+    sorted_loadings = abs_loadings.argsort()[::-1]
+    
+    # iterate over sorted loadings
+    for j in sorted_loadings:
+        # get feature name and contribution
+        feature_name = feature_names[j]
+        contribution = loadings[j] * np.sqrt(pca.explained_variance_[i])
+        
+        # add row to results dataframe
+        results_df = results_df.append({'Principal Component': i+1,
+                                        'Feature Name': feature_name,
+                                        'Contribution': contribution},
+                                        ignore_index=True)
+
+# display results
+print(results_df)
+
+
+
+
+
+
+
+
+
+
+========================================================================
+from sklearn.cluster import AgglomerativeClustering
+from scipy.cluster.hierarchy import dendrogram, linkage
+
+n_components = 5
+pca = PCA(n_components=n_components)
+
+# Fit PCA model to data
+pca.fit(X)
+
+# Get the loadings for each principal component
+loadings = pca.components_.T * np.sqrt(pca.explained_variance_)
+
+# Create a dataframe to store the loadings and feature names
+df_loadings = pd.DataFrame(loadings, columns=[f"PC{i+1}" for i in range(n_components)])
+df_loadings['Feature'] = [f"Feature{i+1}" for i in range(X.shape[1])]
+
+# Loop over the principal components and get the corresponding initial features
+for i in range(n_components):
+    # Get the loadings for the current principal component
+    loadings_pc = df_loadings.loc[:, f'PC{i+1}']
+    # Get the absolute values of the loadings and sort in descending order
+    loadings_pc_abs_sorted = loadings_pc.abs().sort_values(ascending=False)
+    # Get the names of the features that have the highest absolute loadings
+    feature_names = df_loadings.loc[loadings_pc_abs_sorted.index, 'Feature']
+    # Get the corresponding absolute loadings
+    loadings_values = loadings_pc_abs_sorted.values
+    # Get the contributions of each feature to the principal component
+    contributions = (loadings_values / loadings_values.sum()) * 100
+    # Create a dataframe to store the results
+    
+    df_pc = pd.DataFrame({
+        'Feature': feature_names,
+        'Loading': loadings_pc[loadings_pc_abs_sorted.index].values,
+        'Contribution (%)': contributions
+    })
+    # Print the results
+    print(f"Principal Component {i+1}:")
+    print(df_pc)
